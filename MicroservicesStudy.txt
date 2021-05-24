@@ -1,0 +1,155 @@
+URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+//Custom Exception
+ResponseEntityExceptionHandler
+@ResponseStatus(HttpStatus.NOT_FOUND)
+
+Validation - @Valid
+spring-boot-starter-validation dependecies
+
+
+Hateoas dependecies will share the links related 
+Swagger used for documentation of Rest<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		
+APIModel annotation on top of class
+APIModelProperty annotation on top of attributes
+`
+http://localhost:8081/v2/api-docs
+
+Actuator , hal explorer
+http://localhost:8081/actuator
+
+Igonring
+we can ignore a attribute using @JsonIgnore annotation
+for multiple attribute, use @JsonIgnoreProperty(array of attributes names)
+
+after adding security , it will generate a secret key, default userid is user.
+its a basic authentication
+we can set userid and password by providing insdie the applicationproperties file
+security.user.name=
+security.user.password=
+
+create duplicate instance using runconfiguration, -Dserver.port=900
+
+aop isneeded
+
+
+spring vault server cloud
+
+docker
+----------
+https://hub.docker.com/
+
+docker run -p 5000:5000 in28min/todo-rest-api-h2:1.0.0.RELEASE - command to run
+docker run -p 5000:5000 -d in28min/todo-rest-api-h2:1.0.0.RELEASE - command to run for ditached mode, means will run in background
+docker logs -f containerid(while starting) it will show the logs
+docker container ls - show all the running container
+we can run the same image in different port by using docker run -p 5001:5000 in28min/todo-rest-api-h2:1.0.0.RELEASE command
+we can stop a container using its container id
+to show all the container , we can user docker container ls
+and findout the container id and use 
+"docker stop container id"
+doccker images - - will show all the images.
+docker container ls -a - show all history of images running
+docker tag repositoryname:tag repository:new tag - to make a duplicate copy/same image with another tag name
+docker pul mysql - will download mysql images
+docker search imagename- to find the images file from docker hub , docker search mysql
+docker container pause cobtainerid - to pause the container 
+docker container unpause containerid  - to unpause the container
+docker container prune - to remove the container which is no more runing
+docker run -p 5000:5000 -d --restart=always in28min/todo-rest-api-h2:1.0.0.RELEASE - it will start the container once the docker restarted 
+docker events - to know what all events are happening in all containers
+docker stats - use to see all the usages like proceess, cpus
+docker system df
+docker push rakesh755/microservices-currency-exchange:0.0.1-SNAPSHOT
+docker-compose --version
+
+
+run multiple services using docker compose file
+
+
+
+
+
+micro - docker
+--------------------
+distributer tracing server
+docker run -p 9411:9411 openzipkin/zipkin:2.23 - to run zipkin
+sluth
+localhost:9411/
+
+https://github.com/in28minutes/spring-microservices-v2/tree/main/04.docker
+
+
+create docker image
+-------------------
+
+Inside build-> plugin tage,add below codes
+after artifact id
+<configuration>
+<image>
+<name>rakesh755/microservices-${project-artifactId}:${project.version}</name>
+</image>
+<pullPolicy>IF_NOT_PRESENT</pullPolicy>
+</configuration>
+
+ 
+ 
+ and to create the image file, run below command
+ 
+ run as build, spring-boot:build-image -DskipTests
+ 
+
+
+create a docker-compose.yaml file 
+version: '3.7'
+
+services:
+  currency-exchange:
+    image:
+	mem_limit:700m
+	ports:
+	  - "8000:8000"
+
+fire the command by pointing to that fie  folder - docker-compose up
+
+
+Note - while building image file, login with dockr first in docker application 
+
+
+
+zipkin-composer
+------------------
+
+TOP Recommendation from Debugging Guide:
+
+(2) Try adding restart: always to zipkin-server in docker-compose.yaml
+
+  zipkin-server:
+    image: openzipkin/zipkin:2.23
+    mem_limit: 300m
+    ports:
+      - "9411:9411"
+    networks:
+      - currency-network
+    environment:
+      RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+    depends_on:
+      - rabbitmq
+    restart: always #Restart if there is a problem starting up
+	
+add this as environment so that it will work
+spring.zipkin.baseUrl=http://localhost:9411/
+
+
+
